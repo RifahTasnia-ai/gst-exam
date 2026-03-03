@@ -1,7 +1,5 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -42,6 +40,8 @@ export default function Dashboard() {
     const [activeFilter, setActiveFilter] = useState<string>("All");
     const [loading, setLoading] = useState(true);
     const [hasNewClasses, setHasNewClasses] = useState(false);
+    const [page, setPage] = useState(1);
+    const PAGE_SIZE = 7;
 
     // Auth check
     useEffect(() => {
@@ -157,13 +157,20 @@ export default function Dashboard() {
 
 
     // Filter lectures
-    const filteredLectures =
+    const allFiltered =
         activeFilter === "All"
             ? lectures
             : lectures.filter((l) => l.subject === activeFilter);
 
-    const completedCount = lectures.filter((l) => progressMap.has(l.id)).length;
+    // Split into incomplete (top) and completed (bottom)
+    const incompleteLectures = allFiltered.filter((l) => !progressMap.has(l.id));
+    const completedLectures = allFiltered.filter((l) => progressMap.has(l.id));
 
+    // Pagination (applies to incomplete only)
+    const totalPages = Math.max(1, Math.ceil(incompleteLectures.length / PAGE_SIZE));
+    const pagedIncomplete = incompleteLectures.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+    const completedCount = lectures.filter((l) => progressMap.has(l.id)).length;
     const filters = ["All", ...subjects];
 
     return (
@@ -171,10 +178,7 @@ export default function Dashboard() {
             <AnimatedBackground />
             <OfflineIndicator />
             <main
-                className="animate-fade-in"
                 style={{
-                    position: "relative",
-                    zIndex: 1,
                     paddingTop: "48px",
                     paddingBottom: "96px",
                     paddingLeft: "16px",
@@ -186,7 +190,7 @@ export default function Dashboard() {
             >
                 {/* Header */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-                    <h1 style={{ fontWeight: 700, fontSize: "1.5rem", margin: 0 }}>
+                    <h1 style={{ fontWeight: 700, fontSize: "1.375rem", margin: 0, letterSpacing: "-0.02em" }}>
                         Hi {studentId} 👋
                     </h1>
                     <button
@@ -196,17 +200,17 @@ export default function Dashboard() {
                             background: "var(--color-danger-light)",
                             color: "var(--color-danger)",
                             border: "none",
-                            borderRadius: "10px",
-                            padding: "8px 12px",
+                            borderRadius: "6px",
+                            padding: "6px 10px",
                             cursor: "pointer",
                             display: "flex",
                             alignItems: "center",
-                            gap: "6px",
+                            gap: "4px",
                             fontWeight: 500,
-                            fontSize: "0.875rem",
+                            fontSize: "0.8125rem",
                         }}
                     >
-                        <HiOutlineArrowRightOnRectangle size={18} />
+                        <HiOutlineArrowRightOnRectangle size={16} />
                     </button>
                 </div>
 
@@ -226,7 +230,7 @@ export default function Dashboard() {
                     className="no-scrollbar"
                     style={{
                         display: "flex",
-                        gap: "8px",
+                        gap: "6px",
                         overflowX: "auto",
                         marginBottom: "20px",
                         paddingBottom: "4px",
@@ -247,12 +251,12 @@ export default function Dashboard() {
                         return (
                             <button
                                 key={f}
-                                onClick={() => setActiveFilter(f)}
+                                onClick={() => { setActiveFilter(f); setPage(1); }}
                                 aria-label={`Filter by ${f}`}
                                 className="chip"
                                 style={{
                                     background: chipBg,
-                                    color: f === "Math" && isActive ? "#1E293B" : chipColor,
+                                    color: chipColor,
                                     borderColor: isActive ? "transparent" : "var(--color-border)",
                                 }}
                             >
@@ -271,49 +275,117 @@ export default function Dashboard() {
                         marginBottom: "14px",
                     }}
                 >
-                    <h2 style={{ fontWeight: 600, fontSize: "1.125rem", margin: 0 }}>Lectures</h2>
+                    <h2 style={{ fontWeight: 600, fontSize: "1rem", margin: 0 }}>ক্লাস</h2>
                     <span
                         style={{
                             background: "var(--color-primary-light)",
                             color: "var(--color-primary)",
-                            borderRadius: "9999px",
-                            padding: "2px 10px",
+                            borderRadius: "4px",
+                            padding: "2px 8px",
                             fontSize: "0.75rem",
                             fontWeight: 600,
                         }}
                     >
-                        {filteredLectures.length}
+                        {incompleteLectures.length + completedLectures.length}
                     </span>
                 </div>
 
                 {/* Lecture List */}
                 {loading ? (
                     <LoadingSkeleton count={3} />
-                ) : filteredLectures.length === 0 ? (
+                ) : incompleteLectures.length === 0 && completedLectures.length === 0 ? (
                     <div
                         className="card"
-                        style={{
-                            padding: "40px 20px",
-                            textAlign: "center",
-                            color: "var(--color-text-secondary)",
-                        }}
+                        style={{ padding: "40px 20px", textAlign: "center", color: "var(--color-text-secondary)" }}
                     >
-                        {activeFilter !== "All"
-                            ? `No ${activeFilter} lectures found`
-                            : "No classes yet! Check back soon 📚"}
+                        {activeFilter !== "All" ? `কোনো ${activeFilter} ক্লাস নেই` : "এখনো কোনো ক্লাস নেই 📚"}
                     </div>
                 ) : (
-                    <div className="lecture-grid">
-                        {filteredLectures.map((lecture) => (
-                            <LectureCard
-                                key={lecture.id}
-                                lecture={lecture}
-                                isDone={progressMap.has(lecture.id)}
-                                doneAt={progressMap.get(lecture.id)?.doneAt}
-                                onToggleDone={handleToggleDone}
-                            />
-                        ))}
-                    </div>
+                    <>
+                        {/* Incomplete lectures — paginated */}
+                        {pagedIncomplete.length > 0 && (
+                            <div className="lecture-grid">
+                                {pagedIncomplete.map((lecture) => (
+                                    <LectureCard
+                                        key={lecture.id}
+                                        lecture={lecture}
+                                        isDone={false}
+                                        doneAt={null}
+                                        onToggleDone={handleToggleDone}
+                                    />
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Pagination controls */}
+                        {totalPages > 1 && (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: "12px",
+                                    margin: "20px 0 8px",
+                                }}
+                            >
+                                <button
+                                    onClick={() => { setPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                                    disabled={page === 1}
+                                    style={{
+                                        padding: "8px 16px",
+                                        borderRadius: "6px",
+                                        border: "1px solid var(--color-border)",
+                                        background: "var(--color-card)",
+                                        fontWeight: 500,
+                                        fontSize: "0.8125rem",
+                                        cursor: page === 1 ? "not-allowed" : "pointer",
+                                        opacity: page === 1 ? 0.4 : 1,
+                                        color: "var(--color-text-primary)",
+                                    }}
+                                >
+                                    ← আগে
+                                </button>
+                                <span style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", fontWeight: 500 }}>
+                                    {page} / {totalPages}
+                                </span>
+                                <button
+                                    onClick={() => { setPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                                    disabled={page === totalPages}
+                                    style={{
+                                        padding: "8px 16px",
+                                        borderRadius: "6px",
+                                        border: "1px solid var(--color-border)",
+                                        background: "var(--color-card)",
+                                        fontWeight: 500,
+                                        fontSize: "0.8125rem",
+                                        cursor: page === totalPages ? "not-allowed" : "pointer",
+                                        opacity: page === totalPages ? 0.4 : 1,
+                                        color: "var(--color-text-primary)",
+                                    }}
+                                >
+                                    পরে →
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Completed section — always shown below */}
+                        {completedLectures.length > 0 && (
+                            <>
+                                <div className="section-divider">✅ সম্পন্ন ({completedLectures.length})</div>
+                                <div className="lecture-grid" style={{ opacity: 0.6 }}>
+                                    {completedLectures.map((lecture) => (
+                                        <LectureCard
+                                            key={lecture.id}
+                                            lecture={lecture}
+                                            isDone={true}
+                                            doneAt={progressMap.get(lecture.id)?.doneAt}
+                                            onToggleDone={handleToggleDone}
+                                        />
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </>
                 )}
             </main>
         </>

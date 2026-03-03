@@ -96,10 +96,15 @@ async function sendNewClassNotification(lecture: LectureData) {
             const message: admin.messaging.MulticastMessage = {
                 tokens: chunk.map((record) => record.token),
                 notification: {
-                    title: "New Class Added",
-                    body: notificationBody,
+                    title: "নতুন ক্লাস যোগ হয়েছে! 📚",
+                    body: `${subject} — Lecture ${lectureNo}: ${title}`,
                 },
                 webpush: {
+                    notification: {
+                        icon: "/icons/icon-192x192.png",
+                        badge: "/icons/icon-72x72.png",
+                        vibrate: [200, 100, 200],
+                    },
                     fcmOptions: {
                         link: "/dashboard",
                     },

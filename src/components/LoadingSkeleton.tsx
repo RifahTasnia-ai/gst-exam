@@ -2,59 +2,52 @@
 
 export default function LoadingSkeleton({ count = 3 }: { count?: number }) {
     return (
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {Array.from({ length: count }).map((_, i) => (
-                <div key={i} className="card" style={{ overflow: "hidden" }}>
+                <div key={i} className="card" style={{ padding: "12px", display: "flex", alignItems: "center", gap: "12px" }}>
                     {/* Thumbnail skeleton */}
                     <div
                         className="animate-skeleton"
                         style={{
-                            aspectRatio: "16/9",
-                            background: "#E2E8F0",
-                            width: "100%",
+                            width: "80px",
+                            height: "56px",
+                            borderRadius: "6px",
+                            background: "#e5e7eb",
+                            flexShrink: 0,
                         }}
                     />
-                    {/* Body skeleton */}
-                    <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "10px" }}>
-                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                            <div
-                                className="animate-skeleton"
-                                style={{
-                                    width: "70px",
-                                    height: "24px",
-                                    borderRadius: "9999px",
-                                    background: "#E2E8F0",
-                                }}
-                            />
-                            <div
-                                className="animate-skeleton"
-                                style={{
-                                    width: "80px",
-                                    height: "16px",
-                                    borderRadius: "8px",
-                                    background: "#E2E8F0",
-                                }}
-                            />
-                        </div>
+                    {/* Content skeleton */}
+                    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
                         <div
                             className="animate-skeleton"
                             style={{
-                                width: "90%",
-                                height: "20px",
-                                borderRadius: "8px",
-                                background: "#E2E8F0",
+                                width: "60px",
+                                height: "18px",
+                                borderRadius: "4px",
+                                background: "#e5e7eb",
                             }}
                         />
                         <div
                             className="animate-skeleton"
                             style={{
-                                width: "120px",
-                                height: "36px",
-                                borderRadius: "12px",
-                                background: "#E2E8F0",
+                                width: "85%",
+                                height: "14px",
+                                borderRadius: "4px",
+                                background: "#e5e7eb",
                             }}
                         />
                     </div>
+                    {/* Toggle button skeleton */}
+                    <div
+                        className="animate-skeleton"
+                        style={{
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: "6px",
+                            background: "#e5e7eb",
+                            flexShrink: 0,
+                        }}
+                    />
                 </div>
             ))}
         </div>

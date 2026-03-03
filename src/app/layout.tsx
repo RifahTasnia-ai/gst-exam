@@ -19,7 +19,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#6C63FF",
+  themeColor: "#0f766e",
 };
 
 export default function RootLayout({
@@ -29,17 +29,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable}`} style={{ fontFamily: "var(--font-inter), sans-serif" }}>
+      <body className={`${inter.variable}`} style={{ fontFamily: "var(--font-inter), sans-serif" }} suppressHydrationWarning>
         <Toaster
           position="top-center"
           toastOptions={{
             duration: 3000,
             style: {
-              borderRadius: "12px",
-              padding: "12px 20px",
-              fontSize: "0.9rem",
+              borderRadius: "6px",
+              padding: "10px 16px",
+              fontSize: "0.875rem",
               fontWeight: 500,
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
             },
           }}
         />

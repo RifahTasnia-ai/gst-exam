@@ -24,13 +24,13 @@ export function relativeTime(timestamp: Timestamp | null | undefined): string {
 }
 
 /**
- * Subject color mapping for Tailwind classes.
+ * Subject color mapping — muted, professional tones.
  */
 export const subjectColors: Record<string, { bg: string; text: string; bgLight: string }> = {
-    Physics: { bg: "#818CF8", text: "#FFFFFF", bgLight: "#EEF2FF" },
-    Chemistry: { bg: "#F472B6", text: "#FFFFFF", bgLight: "#FDF2F8" },
-    Math: { bg: "#FBBF24", text: "#1E293B", bgLight: "#FFFBEB" },
-    Biology: { bg: "#34D399", text: "#FFFFFF", bgLight: "#F0FDF4" },
+    Physics: { bg: "#2563eb", text: "#FFFFFF", bgLight: "#eff6ff" },
+    Chemistry: { bg: "#9333ea", text: "#FFFFFF", bgLight: "#faf5ff" },
+    Math: { bg: "#ca8a04", text: "#FFFFFF", bgLight: "#fefce8" },
+    Biology: { bg: "#16a34a", text: "#FFFFFF", bgLight: "#f0fdf4" },
 };
 
 /**

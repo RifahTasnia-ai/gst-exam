@@ -26,19 +26,18 @@ export default function NewClassBanner({ hasNewClasses }: { hasNewClasses: boole
 
     return (
         <div
-            className="animate-slide-down"
             style={{
                 background: "var(--color-primary-light)",
-                borderRadius: "12px",
-                padding: "12px 16px",
+                borderRadius: "6px",
+                padding: "10px 14px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
                 marginBottom: "16px",
-                border: "1.5px solid var(--color-primary)",
+                border: "1px solid var(--color-primary)",
             }}
         >
-            <span style={{ color: "var(--color-primary)", fontWeight: 600, fontSize: "0.9rem" }}>
+            <span style={{ color: "var(--color-primary)", fontWeight: 600, fontSize: "0.875rem" }}>
                 🆕 New classes added!
             </span>
             <button
@@ -52,7 +51,7 @@ export default function NewClassBanner({ hasNewClasses }: { hasNewClasses: boole
                     padding: "4px",
                 }}
             >
-                <HiOutlineXMark size={20} />
+                <HiOutlineXMark size={18} />
             </button>
         </div>
     );

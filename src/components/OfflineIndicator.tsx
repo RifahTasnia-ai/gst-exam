@@ -25,25 +25,24 @@ export default function OfflineIndicator() {
 
     return (
         <div
-            className="animate-slide-down"
             style={{
                 position: "fixed",
                 top: 0,
                 left: 0,
                 right: 0,
                 zIndex: 50,
-                background: "#EF4444",
+                background: "var(--color-danger)",
                 color: "white",
                 padding: "8px 16px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "8px",
-                fontSize: "0.875rem",
+                fontSize: "0.8125rem",
                 fontWeight: 500,
             }}
         >
-            <HiOutlineWifi size={18} />
+            <HiOutlineWifi size={16} />
             You&apos;re offline — some features may be limited
         </div>
     );

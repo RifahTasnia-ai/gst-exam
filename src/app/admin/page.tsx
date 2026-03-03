@@ -1,7 +1,5 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
 import { useState, useEffect } from "react";
 import {
     signInWithEmailAndPassword,
@@ -99,6 +97,16 @@ export default function AdminPanel() {
             fetchVideoTitle(id).then((t) => setTitle(t));
         }
     }, [youtubeUrl]);
+
+    // Auto-set lecture number based on subject
+    useEffect(() => {
+        if (lectures.length === 0) return;
+        const existing = lectures
+            .filter((l) => l.subject === subject)
+            .map((l) => Number(l.lectureNo) || 0);
+        const next = existing.length > 0 ? Math.max(...existing) + 1 : 1;
+        setLectureNo(next);
+    }, [subject, lectures]);
 
     // Login handler
     const handleLogin = async (e: React.FormEvent) => {
@@ -211,8 +219,8 @@ export default function AdminPanel() {
         return (
             <>
                 <AnimatedBackground />
-                <main style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1 }}>
-                    <div className="animate-skeleton" style={{ width: "48px", height: "48px", borderRadius: "50%", background: "#E2E8F0" }} />
+                <main style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <div className="animate-skeleton" style={{ width: "40px", height: "40px", borderRadius: "6px", background: "#e5e7eb" }} />
                 </main>
             </>
         );
@@ -224,22 +232,20 @@ export default function AdminPanel() {
             <>
                 <AnimatedBackground />
                 <main
-                    className="animate-fade-in"
                     style={{
-                        position: "relative",
-                        zIndex: 1,
                         minHeight: "100dvh",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         padding: "20px",
+                        background: "#fafafa",
                     }}
                 >
-                    <div className="card card-md" style={{ width: "100%", maxWidth: "400px", padding: "40px 28px", textAlign: "center" }}>
-                        <h1 style={{ color: "var(--color-primary)", fontWeight: 800, fontSize: "1.75rem", margin: "0 0 8px" }}>
+                    <div className="card" style={{ width: "100%", maxWidth: "380px", padding: "32px 24px", textAlign: "center" }}>
+                        <h1 style={{ color: "var(--color-text-primary)", fontWeight: 700, fontSize: "1.5rem", margin: "0 0 6px", letterSpacing: "-0.02em" }}>
                             Admin Login
                         </h1>
-                        <p style={{ color: "var(--color-text-secondary)", fontSize: "0.9rem", margin: "0 0 28px" }}>
+                        <p style={{ color: "var(--color-text-secondary)", fontSize: "0.875rem", margin: "0 0 24px" }}>
                             Sign in to manage classes
                         </p>
                         <form onSubmit={handleLogin}>
@@ -250,7 +256,7 @@ export default function AdminPanel() {
                                 placeholder="Email"
                                 aria-label="Admin email"
                                 className="input-field"
-                                style={{ marginBottom: "12px" }}
+                                style={{ marginBottom: "10px" }}
                                 required
                             />
                             <input
@@ -260,14 +266,14 @@ export default function AdminPanel() {
                                 placeholder="Password"
                                 aria-label="Admin password"
                                 className="input-field"
-                                style={{ marginBottom: "16px" }}
+                                style={{ marginBottom: "14px" }}
                                 required
                             />
                             <button
                                 type="submit"
                                 disabled={loginLoading}
                                 className="btn-primary"
-                                style={{ width: "100%", padding: "14px", fontSize: "1rem", opacity: loginLoading ? 0.6 : 1 }}
+                                style={{ width: "100%", padding: "10px", fontSize: "0.9375rem", opacity: loginLoading ? 0.6 : 1 }}
                             >
                                 {loginLoading ? "Signing in..." : "Sign In"}
                             </button>
@@ -283,10 +289,7 @@ export default function AdminPanel() {
         <>
             <AnimatedBackground />
             <main
-                className="animate-fade-in"
                 style={{
-                    position: "relative",
-                    zIndex: 1,
                     paddingTop: "48px",
                     paddingBottom: "96px",
                     paddingLeft: "16px",
@@ -299,7 +302,7 @@ export default function AdminPanel() {
                 {/* Header */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
                     <div>
-                        <h1 style={{ fontWeight: 700, fontSize: "1.5rem", margin: 0 }}>Admin Panel</h1>
+                        <h1 style={{ fontWeight: 700, fontSize: "1.375rem", margin: 0, letterSpacing: "-0.02em" }}>Admin Panel</h1>
                         <p style={{ color: "var(--color-text-secondary)", fontSize: "0.8125rem", margin: "2px 0 0" }}>
                             {user.email}
                         </p>
@@ -311,23 +314,23 @@ export default function AdminPanel() {
                             background: "var(--color-danger-light)",
                             color: "var(--color-danger)",
                             border: "none",
-                            borderRadius: "10px",
-                            padding: "8px 14px",
+                            borderRadius: "6px",
+                            padding: "6px 12px",
                             cursor: "pointer",
                             display: "flex",
                             alignItems: "center",
-                            gap: "6px",
+                            gap: "4px",
                             fontWeight: 500,
-                            fontSize: "0.875rem",
+                            fontSize: "0.8125rem",
                         }}
                     >
-                        <HiOutlineArrowRightOnRectangle size={18} />
+                        <HiOutlineArrowRightOnRectangle size={16} />
                         Logout
                     </button>
                 </div>
 
                 {/* Tabs */}
-                <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
+                <div style={{ display: "flex", gap: "6px", marginBottom: "24px" }}>
                     <button
                         onClick={() => setActiveTab("add")}
                         className="chip"
@@ -337,10 +340,10 @@ export default function AdminPanel() {
                             borderColor: activeTab === "add" ? "transparent" : "var(--color-border)",
                             display: "flex",
                             alignItems: "center",
-                            gap: "6px",
+                            gap: "5px",
                         }}
                     >
-                        <HiOutlinePlusCircle size={16} /> Add New Class
+                        <HiOutlinePlusCircle size={15} /> Add New Class
                     </button>
                     <button
                         onClick={() => setActiveTab("manage")}
@@ -351,23 +354,23 @@ export default function AdminPanel() {
                             borderColor: activeTab === "manage" ? "transparent" : "var(--color-border)",
                             display: "flex",
                             alignItems: "center",
-                            gap: "6px",
+                            gap: "5px",
                         }}
                     >
-                        <HiOutlineQueueList size={16} /> Manage Classes
+                        <HiOutlineQueueList size={15} /> Manage Classes
                     </button>
                 </div>
 
                 {/* TAB 1: Add New Class */}
                 {activeTab === "add" && (
-                    <div className="card card-md animate-fade-in" style={{ padding: "24px" }}>
-                        <h2 style={{ fontWeight: 600, fontSize: "1.125rem", margin: "0 0 20px" }}>
+                    <div className="card" style={{ padding: "20px" }}>
+                        <h2 style={{ fontWeight: 600, fontSize: "1rem", margin: "0 0 18px" }}>
                             Add New Class
                         </h2>
                         <form onSubmit={handlePublish}>
                             {/* YouTube URL */}
-                            <label style={{ display: "block", marginBottom: "16px" }}>
-                                <span style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "6px" }}>
+                            <label style={{ display: "block", marginBottom: "14px" }}>
+                                <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "5px" }}>
                                     YouTube Link
                                 </span>
                                 <input
@@ -381,7 +384,7 @@ export default function AdminPanel() {
 
                             {/* Preview */}
                             {videoId && (
-                                <div className="animate-fade-in" style={{ marginBottom: "16px", borderRadius: "12px", overflow: "hidden", border: "1.5px solid var(--color-border)" }}>
+                                <div style={{ marginBottom: "14px", borderRadius: "6px", overflow: "hidden", border: "1px solid var(--color-border)" }}>
                                     <img
                                         src={getThumbnailUrl(videoId)}
                                         alt="Video preview"
@@ -391,8 +394,8 @@ export default function AdminPanel() {
                             )}
 
                             {/* Title */}
-                            <label style={{ display: "block", marginBottom: "16px" }}>
-                                <span style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "6px" }}>
+                            <label style={{ display: "block", marginBottom: "14px" }}>
+                                <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "5px" }}>
                                     Title
                                 </span>
                                 <input
@@ -406,9 +409,9 @@ export default function AdminPanel() {
                             </label>
 
                             {/* Lecture No + Subject row */}
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "14px" }}>
                                 <label>
-                                    <span style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "6px" }}>
+                                    <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "5px" }}>
                                         Lecture #
                                     </span>
                                     <input
@@ -422,7 +425,7 @@ export default function AdminPanel() {
                                     />
                                 </label>
                                 <label>
-                                    <span style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "6px" }}>
+                                    <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "5px" }}>
                                         Subject
                                     </span>
                                     <select
@@ -439,8 +442,8 @@ export default function AdminPanel() {
                             </div>
 
                             {/* Published toggle */}
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-                                <span style={{ fontSize: "0.875rem", fontWeight: 500 }}>Published</span>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "18px" }}>
+                                <span style={{ fontSize: "0.8125rem", fontWeight: 500 }}>Published</span>
                                 <div
                                     role="switch"
                                     aria-checked={published}
@@ -457,7 +460,7 @@ export default function AdminPanel() {
                                 type="submit"
                                 disabled={publishing || !videoId}
                                 className="btn-primary"
-                                style={{ width: "100%", padding: "14px", fontSize: "1rem", opacity: publishing ? 0.6 : 1 }}
+                                style={{ width: "100%", padding: "10px", fontSize: "0.9375rem", opacity: publishing ? 0.6 : 1 }}
                             >
                                 {publishing ? "Publishing..." : "Publish Class 🚀"}
                             </button>
@@ -467,14 +470,14 @@ export default function AdminPanel() {
 
                 {/* TAB 2: Manage Classes */}
                 {activeTab === "manage" && (
-                    <div className="animate-fade-in">
+                    <div>
                         {/* Search */}
-                        <div style={{ position: "relative", marginBottom: "16px" }}>
+                        <div style={{ position: "relative", marginBottom: "14px" }}>
                             <HiOutlineMagnifyingGlass
-                                size={18}
+                                size={16}
                                 style={{
                                     position: "absolute",
-                                    left: "14px",
+                                    left: "12px",
                                     top: "50%",
                                     transform: "translateY(-50%)",
                                     color: "var(--color-text-secondary)",
@@ -486,7 +489,7 @@ export default function AdminPanel() {
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search by title..."
                                 className="input-field"
-                                style={{ paddingLeft: "40px" }}
+                                style={{ paddingLeft: "36px" }}
                             />
                         </div>
 
@@ -527,34 +530,34 @@ export default function AdminPanel() {
                         onClick={() => setEditingLecture(null)}
                     >
                         <div
-                            className="card card-md animate-fade-in"
-                            style={{ width: "100%", maxWidth: "440px", padding: "24px" }}
+                            className="card"
+                            style={{ width: "100%", maxWidth: "420px", padding: "20px" }}
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <h3 style={{ fontWeight: 600, fontSize: "1.125rem", margin: "0 0 20px" }}>
+                            <h3 style={{ fontWeight: 600, fontSize: "1rem", margin: "0 0 18px" }}>
                                 Edit Lecture
                             </h3>
 
                             <label style={{ display: "block", marginBottom: "12px" }}>
-                                <span style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "6px" }}>Title</span>
+                                <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "5px" }}>Title</span>
                                 <input type="text" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} className="input-field" />
                             </label>
 
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
                                 <label>
-                                    <span style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "6px" }}>Lecture #</span>
+                                    <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "5px" }}>Lecture #</span>
                                     <input type="number" value={editLectureNo} onChange={(e) => setEditLectureNo(e.target.value ? Number(e.target.value) : "")} className="input-field" min={1} />
                                 </label>
                                 <label>
-                                    <span style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "6px" }}>Subject</span>
+                                    <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: "5px" }}>Subject</span>
                                     <select value={editSubject} onChange={(e) => setEditSubject(e.target.value)} className="input-field" style={{ cursor: "pointer" }}>
                                         {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
                                     </select>
                                 </label>
                             </div>
 
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-                                <span style={{ fontSize: "0.875rem", fontWeight: 500 }}>Published</span>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "18px" }}>
+                                <span style={{ fontSize: "0.8125rem", fontWeight: 500 }}>Published</span>
                                 <div
                                     role="switch"
                                     aria-checked={editPublished}
@@ -566,18 +569,19 @@ export default function AdminPanel() {
                                 />
                             </div>
 
-                            <div style={{ display: "flex", gap: "10px" }}>
+                            <div style={{ display: "flex", gap: "8px" }}>
                                 <button
                                     onClick={() => setEditingLecture(null)}
                                     style={{
                                         flex: 1,
-                                        padding: "12px",
-                                        borderRadius: "12px",
-                                        border: "1.5px solid var(--color-border)",
+                                        padding: "10px",
+                                        borderRadius: "6px",
+                                        border: "1px solid var(--color-border)",
                                         background: "transparent",
                                         fontWeight: 500,
                                         cursor: "pointer",
                                         color: "var(--color-text-secondary)",
+                                        fontSize: "0.875rem",
                                     }}
                                 >
                                     Cancel
@@ -585,7 +589,7 @@ export default function AdminPanel() {
                                 <button
                                     onClick={handleSaveEdit}
                                     className="btn-primary"
-                                    style={{ flex: 1, padding: "12px" }}
+                                    style={{ flex: 1, padding: "10px", fontSize: "0.875rem" }}
                                 >
                                     Save Changes
                                 </button>

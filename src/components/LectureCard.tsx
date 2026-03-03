@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Timestamp } from "firebase/firestore";
 import SubjectChip from "./SubjectChip";
-import YouTubePlayer from "./YouTubePlayer";
 import { relativeTime } from "@/lib/utils";
 import { HiOutlinePlay, HiCheck } from "react-icons/hi2";
 
@@ -27,7 +27,7 @@ interface LectureCardProps {
 }
 
 export default function LectureCard({ lecture, isDone, doneAt, onToggleDone }: LectureCardProps) {
-    const [showPlayer, setShowPlayer] = useState(false);
+    const router = useRouter();
     const [toggling, setToggling] = useState(false);
 
     const handleToggle = async (e: React.MouseEvent) => {
@@ -38,11 +38,7 @@ export default function LectureCard({ lecture, isDone, doneAt, onToggleDone }: L
     };
 
     return (
-        <div className="card animate-fade-up" style={{ overflow: "hidden", marginBottom: "10px" }}>
-            {/* Expanded YouTube player */}
-            {showPlayer && (
-                <YouTubePlayer videoId={lecture.youtubeId} onClose={() => setShowPlayer(false)} />
-            )}
+        <div className="card" style={{ overflow: "hidden", marginBottom: "10px" }}>
 
             {/* Compact row layout */}
             <div
@@ -55,16 +51,16 @@ export default function LectureCard({ lecture, isDone, doneAt, onToggleDone }: L
             >
                 {/* Small thumbnail with play button */}
                 <div
-                    onClick={() => setShowPlayer(!showPlayer)}
+                    onClick={() => router.push(`/lecture/${lecture.id}`)}
                     role="button"
                     aria-label={`Play ${lecture.title}`}
                     tabIndex={0}
-                    onKeyDown={(e) => e.key === "Enter" && setShowPlayer(!showPlayer)}
+                    onKeyDown={(e) => e.key === "Enter" && router.push(`/lecture/${lecture.id}`)}
                     style={{
                         position: "relative",
                         width: "80px",
                         height: "56px",
-                        borderRadius: "10px",
+                        borderRadius: "6px",
                         overflow: "hidden",
                         flexShrink: 0,
                         cursor: "pointer",
@@ -73,6 +69,7 @@ export default function LectureCard({ lecture, isDone, doneAt, onToggleDone }: L
                     <img
                         src={lecture.thumbnail}
                         alt={lecture.title}
+                        loading="lazy"
                         style={{
                             width: "100%",
                             height: "100%",
@@ -122,24 +119,23 @@ export default function LectureCard({ lecture, isDone, doneAt, onToggleDone }: L
                     onClick={handleToggle}
                     disabled={toggling}
                     aria-label={isDone ? "Undo mark as done" : "Mark as done"}
-                    className={isDone && !toggling ? "animate-bounce-scale" : ""}
                     style={{
                         flexShrink: 0,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "10px",
-                        border: isDone ? "none" : "1.5px solid var(--color-border)",
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "6px",
+                        border: isDone ? "none" : "1px solid var(--color-border)",
                         background: isDone ? "var(--color-success)" : "transparent",
                         color: isDone ? "white" : "var(--color-text-secondary)",
                         cursor: "pointer",
-                        transition: "all 0.15s",
+                        transition: "background-color 0.15s",
                         opacity: toggling ? 0.5 : 1,
                     }}
                 >
-                    <HiCheck size={18} />
+                    <HiCheck size={16} />
                 </button>
             </div>
 

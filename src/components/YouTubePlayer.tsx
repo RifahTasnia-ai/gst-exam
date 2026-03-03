@@ -14,14 +14,13 @@ export default function YouTubePlayer({ videoId, onClose }: YouTubePlayerProps) 
     const [ready, setReady] = useState(false);
 
     return (
-        <div className="animate-fade-in" style={{ position: "relative" }}>
+        <div style={{ position: "relative" }}>
             {!ready && (
                 <div
                     className="animate-skeleton"
                     style={{
                         aspectRatio: "16/9",
-                        background: "#1E293B",
-                        borderRadius: "0",
+                        background: "#e5e7eb",
                         width: "100%",
                     }}
                 />
@@ -53,9 +52,9 @@ export default function YouTubePlayer({ videoId, onClose }: YouTubePlayerProps) 
                         top: "8px",
                         right: "8px",
                         zIndex: 10,
-                        width: "32px",
-                        height: "32px",
-                        borderRadius: "50%",
+                        width: "28px",
+                        height: "28px",
+                        borderRadius: "6px",
                         background: "rgba(0,0,0,0.6)",
                         color: "white",
                         border: "none",
@@ -63,7 +62,7 @@ export default function YouTubePlayer({ videoId, onClose }: YouTubePlayerProps) 
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: "18px",
+                        fontSize: "14px",
                     }}
                 >
                     ✕

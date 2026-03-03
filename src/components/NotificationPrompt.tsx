@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { HiOutlineBell } from "react-icons/hi2";
+import { HiOutlineBell, HiOutlineXMark } from "react-icons/hi2";
 import { requestNotificationPermission, wasNotifDismissed, dismissNotifPrompt } from "@/lib/fcm";
 
 interface NotificationPromptProps {
@@ -33,69 +33,78 @@ export default function NotificationPrompt({ studentId }: NotificationPromptProp
 
     return (
         <div
-            className="card animate-slide-down"
+            className="card"
             style={{
-                padding: "16px",
                 marginBottom: "16px",
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
+                overflow: "hidden",
             }}
         >
             <div
                 style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "10px",
-                    background: "var(--color-primary-light)",
+                    padding: "12px 14px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
+                    gap: "10px",
                 }}
             >
-                <HiOutlineBell size={22} color="var(--color-primary)" />
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontWeight: 600, fontSize: "0.875rem", margin: 0 }}>
-                    🔔 Get notified when new classes are added?
-                </p>
-            </div>
-            <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
-                <button
-                    onClick={handleDismiss}
-                    aria-label="Dismiss notification prompt"
+                {/* Bell icon */}
+                <div
                     style={{
-                        padding: "6px 12px",
-                        borderRadius: "8px",
-                        border: "1.5px solid var(--color-border)",
-                        background: "transparent",
-                        color: "var(--color-text-secondary)",
-                        fontSize: "0.8125rem",
-                        fontWeight: 500,
-                        cursor: "pointer",
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "6px",
+                        background: "var(--color-primary-light)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
                     }}
                 >
-                    Not now
-                </button>
-                <button
-                    onClick={handleEnable}
-                    disabled={loading}
-                    aria-label="Enable notifications"
-                    style={{
-                        padding: "6px 12px",
-                        borderRadius: "8px",
-                        border: "none",
-                        background: "var(--color-primary)",
-                        color: "white",
-                        fontSize: "0.8125rem",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        opacity: loading ? 0.6 : 1,
-                    }}
-                >
-                    {loading ? "..." : "Enable"}
-                </button>
+                    <HiOutlineBell size={18} color="var(--color-primary)" />
+                </div>
+
+                {/* Text */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontWeight: 600, fontSize: "0.8125rem", margin: "0 0 1px", color: "var(--color-text-primary)" }}>
+                        নতুন ক্লাস নোটিফিকেশন চালু করো
+                    </p>
+                    <p style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", margin: 0 }}>
+                        নতুন ক্লাস এলেই সাথে সাথে জানতে পারবে
+                    </p>
+                </div>
+
+                {/* Actions */}
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
+                    <button
+                        onClick={handleEnable}
+                        disabled={loading}
+                        aria-label="নোটিফিকেশন চালু করো"
+                        className="btn-primary"
+                        style={{
+                            padding: "6px 12px",
+                            fontSize: "0.8125rem",
+                            opacity: loading ? 0.6 : 1,
+                        }}
+                    >
+                        {loading ? "..." : "চালু করো"}
+                    </button>
+                    <button
+                        onClick={handleDismiss}
+                        aria-label="বাদ দাও"
+                        style={{
+                            padding: "4px",
+                            borderRadius: "6px",
+                            border: "none",
+                            background: "transparent",
+                            color: "var(--color-text-secondary)",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
+                        <HiOutlineXMark size={16} />
+                    </button>
+                </div>
             </div>
         </div>
     );
